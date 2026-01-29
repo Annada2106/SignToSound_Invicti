@@ -1,0 +1,14 @@
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# ML / model files (optional but recommended)
+*.keras
+*.h5
+
+# OS files
+.DS_Store
+Thumbs.db
