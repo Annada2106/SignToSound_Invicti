@@ -1,5 +1,10 @@
 # Virtual environment
 venv/
+<<<<<<< HEAD
+=======
+tf_env/
+env/
+>>>>>>> a0d53ec (Clean initial commit)
 
 # Python cache
 __pycache__/
@@ -8,6 +13,10 @@ __pycache__/
 # ML / model files (optional but recommended)
 *.keras
 *.h5
+<<<<<<< HEAD
+=======
+*.task
+>>>>>>> a0d53ec (Clean initial commit)
 
 # OS files
 .DS_Store

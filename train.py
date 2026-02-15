@@ -4,12 +4,20 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import Sequential
+<<<<<<< HEAD
 from tensorflow.keras.layers import Dense, Dropout
+=======
+from tensorflow.keras.layers import Dense, Dropout, BatchNormalization
+>>>>>>> a0d53ec (Clean initial commit)
 import matplotlib.pyplot as plt
 import seaborn as sns
 
 # ==================================================
+<<<<<<< HEAD
 # 1. LOAD DATA
+=======
+# 1. LOAD & AUGMENT DATA FROM 'My_Keypoint_Data'
+>>>>>>> a0d53ec (Clean initial commit)
 # ==================================================
 DATA_PATH = os.path.join(os.getcwd(), "My_Keypoint_Data")
 
@@ -19,16 +27,26 @@ actions = sorted([
 ])
 
 actions = np.array(actions)
+<<<<<<< HEAD
 print("Classes:", actions)
+=======
+print("Detected Classes:", actions)
+>>>>>>> a0d53ec (Clean initial commit)
 
 X, y = [], []
 label_map = {label: idx for idx, label in enumerate(actions)}
 
+<<<<<<< HEAD
+=======
+print(f"📂 Loading, Transforming, and Augmenting .npy files from {DATA_PATH}...")
+
+>>>>>>> a0d53ec (Clean initial commit)
 for letter in actions:
     letter_path = os.path.join(DATA_PATH, letter)
     for file in os.listdir(letter_path):
         if file.endswith(".npy"):
             data = np.load(os.path.join(letter_path, file))
+<<<<<<< HEAD
             if data.shape == (63,):
                 X.append(data)
                 y.append(label_map[letter])
@@ -41,18 +59,45 @@ if X.shape[0] == 0:
 
 print("X shape:", X.shape)
 print("y shape:", y.shape)
+=======
+            
+            if data.shape == (63,):
+                # 1. Convert to Wrist-Relative
+                points = data.reshape(21, 3) 
+                wrist = points[0] 
+                relative_points = points - wrist 
+                transformed_data = relative_points.flatten()
+                
+                # 2. Add Original Clean Data
+                X.append(transformed_data)
+                y.append(label_map[letter])
+
+                # 3. DATA AUGMENTATION: Add 3 "Jittery" Clones
+                # This simulates the real-world shaking of a webcam
+                for _ in range(3):
+                    noise = np.random.normal(0, 0.015, transformed_data.shape) # 1.5% jitter
+                    noisy_data = transformed_data + noise
+                    X.append(noisy_data)
+                    y.append(label_map[letter])
+
+X = np.array(X, dtype=np.float32)
+y = to_categorical(y, num_classes=len(actions))
+
+print(f"✅ Successfully created {X.shape[0]} total samples (including augmented data).")
+>>>>>>> a0d53ec (Clean initial commit)
 
 # ==================================================
 # 2. NORMALIZATION
 # ==================================================
 max_vals = np.max(np.abs(X), axis=1)
-max_vals[max_vals == 0] = 1
+max_vals[max_vals == 0] = 1 
 X = X / max_vals[:, np.newaxis]
 
 # ==================================================
 # 3. TRAIN / TEST SPLIT
 # ==================================================
 X_train, X_test, y_train, y_test = train_test_split(
+<<<<<<< HEAD
     X, y,
     test_size=0.2,
     stratify=y,
@@ -66,10 +111,27 @@ model = Sequential([
     Dense(128, activation="relu", input_shape=(63,)),
     Dropout(0.3),
     Dense(64, activation="relu"),
+=======
+    X, y, test_size=0.2, stratify=y, random_state=42
+)
+
+# ==================================================
+# 4. UPGRADED NEURAL NETWORK MODEL
+# ==================================================
+# Added BatchNormalization to stabilize learning on messy data
+model = Sequential([
+    Dense(128, activation="relu", input_shape=(63,)),
+    BatchNormalization(),
+    Dropout(0.3),
+    Dense(64, activation="relu"),
+    BatchNormalization(),
+    Dropout(0.2),
+>>>>>>> a0d53ec (Clean initial commit)
     Dense(32, activation="relu"),
     Dense(len(actions), activation="softmax")
 ])
 
+<<<<<<< HEAD
 model.compile(
     optimizer="adam",
     loss="categorical_crossentropy",
@@ -153,3 +215,17 @@ plt.show()
 # ==================================================
 loss, acc = model.evaluate(X_test, y_test)
 print(f"🎯 Final Test Accuracy: {acc * 100:.2f}%")
+=======
+model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
+
+# ==================================================
+# 5. TRAIN THE MODEL
+# ==================================================
+print("🚀 Training started...")
+history = model.fit(
+    X_train, y_train, epochs=60, batch_size=32, validation_split=0.1, verbose=1
+)
+
+model.save("sign_language_model.keras")
+print("✅ Model saved as sign_language_model.keras")
+>>>>>>> a0d53ec (Clean initial commit)
