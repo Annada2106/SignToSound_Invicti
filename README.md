@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 
-
-=======
->>>>>>> a0d53ec (Clean initial commit)
 # Real-Time American Sign Language (ASL) Alphabet Recognition
 
 ## Project Overview
