@@ -1,10 +1,7 @@
 import cv2
 import numpy as np
 import os
-<<<<<<< HEAD
-=======
 import time
->>>>>>> a0d53ec (Clean initial commit)
 from tensorflow.keras.models import load_model
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
@@ -38,14 +35,12 @@ options = vision.HandLandmarkerOptions(
 detector = vision.HandLandmarker.create_from_options(options)
 
 # ==================================================
-<<<<<<< HEAD
 # 3. PREDICTION SMOOTHING
 # ==================================================
 prediction_buffer = deque(maxlen=15)
 
 # ==================================================
 # 4. WEBCAM (WINDOWS FIX)
-=======
 # 3. PREDICTION SMOOTHING & STABILITY LOGIC
 # ==================================================
 prediction_buffer = deque(maxlen=5) # Reduced from 15 to 5 to avoid lag
@@ -65,7 +60,6 @@ PAUSE_TIME = 2  # seconds to detect word end
 
 # ==================================================
 # 5. WEBCAM
->>>>>>> a0d53ec (Clean initial commit)
 # ==================================================
 cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
@@ -75,11 +69,8 @@ if not cap.isOpened():
 print("🎥 Webcam started. Press 'q' to quit.")
 
 # ==================================================
-<<<<<<< HEAD
 # 5. LOOP
-=======
 # 6. LOOP
->>>>>>> a0d53ec (Clean initial commit)
 # ==================================================
 while True:
     ret, frame = cap.read()
@@ -97,7 +88,6 @@ while True:
 
     result = detector.detect(mp_image)
 
-<<<<<<< HEAD
     if result.hand_landmarks:
         hand = result.hand_landmarks[0]
 
@@ -107,7 +97,6 @@ while True:
         ).flatten()
 
         # SAME normalization as training
-=======
     # =============================================
     # HAND DETECTED
     # =============================================
@@ -125,17 +114,13 @@ while True:
 
         landmarks = np.array(landmarks, dtype=np.float32)
 
->>>>>>> a0d53ec (Clean initial commit)
         max_val = np.max(np.abs(landmarks))
         if max_val > 0:
             landmarks = landmarks / max_val
 
         landmarks = landmarks.reshape(1, 63)
 
-<<<<<<< HEAD
-=======
         # --- PREDICT ---
->>>>>>> a0d53ec (Clean initial commit)
         prediction = model.predict(landmarks, verbose=0)
         prediction_buffer.append(prediction)
 
@@ -144,7 +129,6 @@ while True:
         confidence = np.max(avg_pred)
 
         letter = actions[class_id]
-<<<<<<< HEAD
 
         # Display
         cv2.rectangle(frame, (0, 0), (320, 90), (0, 0, 0), -1)
@@ -176,7 +160,6 @@ while True:
             (0, 0, 255),
             3
         )
-=======
         current_time = time.time()
 
         # --- NEW: Stability Logic ---
@@ -228,7 +211,6 @@ while True:
 
     cv2.putText(frame, f"Word: {word}",
                 (10, 180), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0), 2)
->>>>>>> a0d53ec (Clean initial commit)
 
     cv2.imshow("Sign Language Translator", frame)
 
@@ -236,8 +218,5 @@ while True:
         break
 
 cap.release()
-<<<<<<< HEAD
 cv2.destroyAllWindows()
-=======
 cv2.destroyAllWindows()
->>>>>>> a0d53ec (Clean initial commit)
